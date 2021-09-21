@@ -1,14 +1,15 @@
 from graphqlclient import GraphQLClient
 import json
 
-def extract_data(lcID,date):
+def extract_data(lcID,startdate,enddate):
     query_ogx_APDs = """
-    query ($lcID: [Int],$date: DateTime!)
-    {allOpportunityApplication(
+    query ($lcID: [Int],$startdate: DateTime!,$enddate: DateTime!)
+    {
+        allOpportunityApplication(
     		filters:
     		{
           person_home_lc: $lcID
-          date_approved:{from:$date}
+          date_approved:{from:$startdate, to:$enddate}
 
     		}
 
@@ -72,12 +73,12 @@ def extract_data(lcID,date):
       }
     }"""
     query_ogx_REs = '''
-    query ($lcID: [Int],$date: DateTime!)
+    query ($lcID: [Int],$startdate: DateTime!,$enddate: DateTime!)
     {allOpportunityApplication(
     		filters:
     		{
           person_home_lc:$lcID
-          date_realized:{from:$date}
+          date_realized:{from:$startdate, to:$enddate}
 
     		}
 
@@ -141,12 +142,12 @@ def extract_data(lcID,date):
       }
     } '''
     query_ogx_FIs = '''
-        query ($lcID: [Int],$date: DateTime!)
-{allOpportunityApplication(
+    query ($lcID: [Int],$startdate: DateTime!,$enddate: DateTime!)
+    {allOpportunityApplication(
     		filters:
     		{
           person_home_lc:$lcID
-          experience_end_date:{from:$date}
+          experience_end_date:{from:$startdate, to:$enddate}
      statuses:["finished","completed"]
     		}
 
@@ -210,12 +211,12 @@ def extract_data(lcID,date):
       } }'''
 
     query_icx_APDs = '''
-            query ($lcID: [Int],$date: DateTime!)
-{allOpportunityApplication(
+    query ($lcID: [Int],$startdate: DateTime!,$enddate: DateTime!)
+    {allOpportunityApplication(
     		filters:
     		{
           opportunity_home_lc:$lcID
-          date_approved:{from:$date}
+          date_approved:{from:$startdate, to:$enddate}
 
     		}
 
@@ -279,12 +280,12 @@ def extract_data(lcID,date):
       }
     }'''
     query_icx_REs = '''
-                query ($lcID: [Int],$date: DateTime!)
-{allOpportunityApplication(
+    query ($lcID: [Int],$startdate: DateTime!,$enddate: DateTime!)
+    {allOpportunityApplication(
     		filters:
     		{
           opportunity_home_lc:$lcID
-          date_realized:{from:$date}
+          date_realized:{from:$startdate, to:$enddate}
 
     		}
 
@@ -348,12 +349,12 @@ def extract_data(lcID,date):
       }
     } '''
     query_icx_FIs = '''
-                    query ($lcID: [Int],$date: DateTime!)
-{allOpportunityApplication(
+    query ($lcID: [Int],$startdate: DateTime!,$enddate: DateTime!)
+    {allOpportunityApplication(
     		filters:
     		{
           opportunity_home_lc:$lcID
-          experience_end_date:{from:$date}
+          experience_end_date:{from:$startdate, to:$enddate}
      statuses:["finished","completed"]
     		}
 
@@ -417,7 +418,9 @@ def extract_data(lcID,date):
       } }'''
     variables = {
         "lcID": lcID,
-        "date": date
+        "startdate": startdate,
+        "enddate":enddate
+
     }
     data = run_query(query_ogx_APDs,variables)
     result_OGX_APDs = process_data(data['data']['allOpportunityApplication']['data'], "O")
@@ -441,9 +444,10 @@ def extract_data(lcID,date):
 
 
 def run_query(query,variables):
-    client = GraphQLClient('https://gis-api.aiesec.org/graphql?access_token=0339633ea53bfeada686b9601eec9522be673f1d76034bc81e30173b129b2edc')
+    client = GraphQLClient('https://gis-api.aiesec.org/graphql?access_token=fa9a3328b00cef1125f888c1ab950903fd90aed1789366fc13182ca462630c4d')
     result = client.execute(query, variables)
     return json.loads(result)
+
 
 def process_data(data,type):
     eps = []
