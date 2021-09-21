@@ -2,8 +2,8 @@ from pypodio2 import api
 
 podio_client_id = 'ecb-egypt'
 podio_client_secret = 'Htul5Z5AgfKKu6HsV0fGaNp4XakwOSyIwFgkPs92t2GrpslZfN1iTYZr1kBdgBD1'
-podio_login_id = 'adel.mohamed@aiesec.net'
-podio_login_pw = 'MCEgypt2020!'
+podio_login_id = ''
+podio_login_pw = ''
 podio = api.OAuthClient(podio_client_id, podio_client_secret, podio_login_id, podio_login_pw)
 
 
